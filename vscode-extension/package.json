@@ -1,0 +1,45 @@
+{
+  "name": "probejs-tsserver-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VS Code extension for ProbeJS TSServer plugin",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:javascript"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "typescriptServerPlugins": [
+      {
+        "name": "probejs-tsserver-plugin",
+        "enableForWorkspaceTypeScriptVersions": true
+      }
+    ],
+    "configuration": {
+      "title": "ProbeJS TSServer",
+      "properties": {
+        "probejs.tsserver.filterJavaImports": {
+          "type": "boolean",
+          "default": true,
+          "description": "Filter auto-imports from \"java:\" module paths"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "probejs-tsserver-plugin": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/vscode": "^1.96.0",
+    "@vscode/vsce": "^3.0.0"
+  }
+}

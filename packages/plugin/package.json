@@ -1,0 +1,15 @@
+{
+  "name": "probejs-tsserver-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TSServer plugin for ProbeJS",
+  "main": "out/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  }
+}

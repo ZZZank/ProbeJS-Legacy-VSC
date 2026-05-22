@@ -1,0 +1,16 @@
+{
+  "name": "probejs-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ProbeJS monorepo",
+  "scripts": {
+    "build": "npm run build -w packages/plugin && npm run build -w vscode-extension",
+    "watch": "npm run watch -w packages/plugin & npm run watch -w vscode-extension",
+    "build:plugin": "npm run build -w packages/plugin",
+    "build:ext": "npm run build -w vscode-extension"
+  },
+  "workspaces": [
+    "packages/plugin",
+    "vscode-extension"
+  ]
+}
