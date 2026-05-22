@@ -7,8 +7,7 @@
     "vscode": "^1.96.0"
   },
   "activationEvents": [
-    "onLanguage:typescript",
-    "onLanguage:javascript"
+    "onExtension:vscode.typescript-language-features"
   ],
   "main": "./out/extension.js",
   "contributes": {
