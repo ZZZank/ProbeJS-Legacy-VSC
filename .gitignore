@@ -10,3 +10,6 @@ out
 .fast-agent/
 
 package-lock.json
+
+AGENTS.md
+CLAUDE.md

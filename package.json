@@ -1,16 +1,55 @@
 {
-  "name": "probejs-workspace",
+  "name": "probejs-legacy-vscode",
   "version": "0.1.0",
   "private": true,
-  "description": "ProbeJS monorepo",
-  "scripts": {
-    "build": "npm run build -w tss_plugin && npm run build -w vscode-extension",
-    "watch": "npm run watch -w tss_plugin & npm run watch -w vscode-extension",
-    "build:plugin": "npm run build -w tss_plugin",
-    "build:ext": "npm run build -w vscode-extension"
+  "description": "ProbeJS Legacy VS Code extension",
+  "engines": {
+    "vscode": "^1.96.0"
   },
-  "workspaces": [
-    "tss_plugin",
-    "vscode-extension"
-  ]
+  "activationEvents": [
+    "onExtension:vscode.typescript-language-features"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "typescriptServerPlugins": [
+      {
+        "name": "probejs-tsserver-plugin",
+        "enableForWorkspaceTypeScriptVersions": true
+      }
+    ],
+    "configuration": {
+      "title": "ProbeJS Legacy",
+      "properties": {
+        "probejs-legacy.filterJavaImports": {
+          "type": "boolean",
+          "default": true,
+          "description": "Filter auto-imports from \"java:\" module paths"
+        },
+        "probejs-legacy.redirectJavaImports": {
+          "type": "boolean",
+          "default": true,
+          "description": "Redirect \"java:\" imports to Java.loadClass() calls"
+        },
+        "probejs-legacy.redirectTemplate": {
+          "type": "string",
+          "default": "const ${class_name} = Java.loadClass(\"{package_name}.{class_name}\");",
+          "markdownDescription": "Template for redirected imports. `{class_name}` = short class name, `{package_name}` = Java package path.\nDefault: `const ${class_name} = Java.loadClass(\"{package_name}.{class_name}\")`"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && cd tss_plugin && tsc",
+    "watch": "tsc -watch -p tsconfig.json",
+    "package": "npm run build && vsce package"
+  },
+  "dependencies": {
+    "probejs-tsserver-plugin": "file:./tss_plugin"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/vscode": "^1.96.0",
+    "@types/node": "^22.0.0",
+    "@vscode/vsce": "^3.0.0"
+  }
 }

@@ -1,0 +1,14 @@
+src
+tsconfig.json
+.vscode
+.vscode-test
+*.tsbuildinfo
+.claude
+.idea
+.gitignore
+AGENTS.md
+CLAUDE.md
+tss_plugin/src
+tss_plugin/node_modules
+tss_plugin/tsconfig.json
+node_modules
