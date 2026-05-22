@@ -24,6 +24,11 @@
           "type": "boolean",
           "default": true,
           "description": "Filter auto-imports from \"java:\" module paths"
+        },
+        "probejs.tsserver.redirectJavaImports": {
+          "type": "boolean",
+          "default": true,
+          "description": "Redirect \"java:\" imports to Java.loadClass() calls"
         }
       }
     }

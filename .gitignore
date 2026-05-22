@@ -3,3 +3,10 @@ out
 *.tsbuildinfo
 .vscode-test
 *.vsix
+
+.vscode/
+.idea/
+.claude/
+.fast-agent/
+
+package-lock.json
