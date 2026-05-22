@@ -1,4 +1,4 @@
-import type * as ts from "typescript";
+import ts from "typescript";
 import { PluginConfig, DEFAULT } from "./config";
 
 // const { $LevelChunk } = require("java:net/minecraft/world/level/chunk")
@@ -6,7 +6,7 @@ const MATCH_REQUIRE_IMPORT = /const\s+{\s*\$[^}]+\s*}\s*=\s*require\("[^"]+"\)/;
 
 /**
  * Derive full Java class from module specifier and variable name.
- * 
+ *
  * "java:some/java/pkg" + "$XXX" → "some.java.pkg.XXX"
  */
 function javaClassName(moduleSpecifier: string, variableName: string): string {
@@ -19,6 +19,12 @@ function javaClassName(moduleSpecifier: string, variableName: string): string {
   return pkg + "." + cls;
 }
 
+function renderTemplate(template: string, className: string, packageName: string): string {
+  return template
+    .replace(/\{class_name\}/g, className)
+    .replace(/\{package_name\}/g, packageName);
+}
+
 const pluginModule: ts.server.PluginModuleFactory = (mod) => {
   const { typescript } = mod;
 
@@ -28,7 +34,7 @@ const pluginModule: ts.server.PluginModuleFactory = (mod) => {
     create(createInfo: ts.server.PluginCreateInfo) {
       config = { ...config, ...createInfo.config };
 
-      const logger = createInfo.project.projectService.logger
+      const logger = createInfo.project.projectService.logger;
 
       const languageService = createInfo.languageService;
       const proxy: ts.LanguageService = Object.assign({}, languageService);
@@ -87,7 +93,7 @@ const pluginModule: ts.server.PluginModuleFactory = (mod) => {
 
         // Source may come directly or via CompletionEntryData
         const specifier = source || data?.moduleSpecifier;
-        if (!specifier?.startsWith("java:")) {
+        if (!specifier?.startsWith("java:") || !entryName.startsWith("$")) {
           return details;
         }
 
@@ -95,13 +101,15 @@ const pluginModule: ts.server.PluginModuleFactory = (mod) => {
           for (const change of codeAction.changes) {
             change.textChanges = change.textChanges.map(textChange => {
               if (MATCH_REQUIRE_IMPORT.test(textChange.newText)) {
+                const importClassName = entryName.slice(1);
+                const importPackage = specifier.slice("java:".length).replace(/\//g, ".");
                 return {
-                  newText: `const ${entryName} = Java.loadClass("${javaClassName(specifier, entryName)}");`,
-                  span: textChange.span
-                }
+                  newText: renderTemplate(config.redirectTemplate!, importClassName, importPackage) + '\n',
+                  span: textChange.span,
+                };
               }
-              return textChange
-            })
+              return textChange;
+            });
           }
         }
 

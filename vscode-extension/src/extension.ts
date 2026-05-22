@@ -2,6 +2,12 @@ import * as vscode from "vscode";
 
 const PLUGIN_ID = "probejs-tsserver-plugin";
 
+const CONFIG_KEYS = [
+  "filterJavaImports",
+  "redirectJavaImports",
+  "redirectTemplate",
+] as const;
+
 function sendConfigToPlugin(config: Record<string, unknown>) {
   vscode.commands.executeCommand("typescript.configurePlugin", {
     pluginId: PLUGIN_ID,
@@ -11,10 +17,11 @@ function sendConfigToPlugin(config: Record<string, unknown>) {
 
 function readConfig(): Record<string, unknown> {
   const cfg = vscode.workspace.getConfiguration("probejs.tsserver");
-  return {
-    filterJavaImports: cfg.get("filterJavaImports"),
-    redirectJavaImports: cfg.get("redirectJavaImports"),
-  };
+  const result: Record<string, unknown> = {};
+  for (const key of CONFIG_KEYS) {
+    result[key] = cfg.get(key);
+  }
+  return result;
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -27,6 +34,6 @@ export function activate(context: vscode.ExtensionContext) {
       if (e.affectsConfiguration("probejs.tsserver")) {
         sendConfigToPlugin(readConfig());
       }
-    })
+    }),
   );
 }

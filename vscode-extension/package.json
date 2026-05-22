@@ -29,6 +29,11 @@
           "type": "boolean",
           "default": true,
           "description": "Redirect \"java:\" imports to Java.loadClass() calls"
+        },
+        "probejs.tsserver.redirectTemplate": {
+          "type": "string",
+          "default": "const ${class_name} = Java.loadClass(\"{package_name}.{class_name}\");",
+          "markdownDescription": "Template for redirected imports. `{class_name}` = short class name, `{package_name}` = Java package path.\nDefault: `const ${class_name} = Java.loadClass(\"{package_name}.{class_name}\")`"
         }
       }
     }
