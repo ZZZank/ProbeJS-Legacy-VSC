@@ -1,8 +1,8 @@
 {
-  "name": "probejs-tsserver-extension",
+  "name": "probejs-legacy-vscode",
   "version": "0.1.0",
   "private": true,
-  "description": "VS Code extension for ProbeJS TSServer plugin",
+  "description": "ProbeJS Legacy VS Code extension",
   "engines": {
     "vscode": "^1.96.0"
   },
@@ -18,19 +18,19 @@
       }
     ],
     "configuration": {
-      "title": "ProbeJS TSServer",
+      "title": "ProbeJS Legacy",
       "properties": {
-        "probejs.tsserver.filterJavaImports": {
+        "probejs-legacy.filterJavaImports": {
           "type": "boolean",
           "default": true,
           "description": "Filter auto-imports from \"java:\" module paths"
         },
-        "probejs.tsserver.redirectJavaImports": {
+        "probejs-legacy.redirectJavaImports": {
           "type": "boolean",
           "default": true,
           "description": "Redirect \"java:\" imports to Java.loadClass() calls"
         },
-        "probejs.tsserver.redirectTemplate": {
+        "probejs-legacy.redirectTemplate": {
           "type": "string",
           "default": "const ${class_name} = Java.loadClass(\"{package_name}.{class_name}\");",
           "markdownDescription": "Template for redirected imports. `{class_name}` = short class name, `{package_name}` = Java package path.\nDefault: `const ${class_name} = Java.loadClass(\"{package_name}.{class_name}\")`"

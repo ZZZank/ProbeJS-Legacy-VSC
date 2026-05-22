@@ -16,7 +16,7 @@ function sendConfigToPlugin(config: Record<string, unknown>) {
 }
 
 function readConfig(): Record<string, unknown> {
-  const cfg = vscode.workspace.getConfiguration("probejs.tsserver");
+  const cfg = vscode.workspace.getConfiguration("probejs-legacy");
   const result: Record<string, unknown> = {};
   for (const key of CONFIG_KEYS) {
     result[key] = cfg.get(key);
@@ -25,13 +25,13 @@ function readConfig(): Record<string, unknown> {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log("[probejs-tsserver-extension] Activating");
+  console.log("[probejs-legacy-vscode] Activating");
 
   sendConfigToPlugin(readConfig());
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration("probejs.tsserver")) {
+      if (e.affectsConfiguration("probejs-legacy")) {
         sendConfigToPlugin(readConfig());
       }
     }),
