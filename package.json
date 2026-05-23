@@ -45,11 +45,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && cd tss_plugin && tsc",
     "watch": "tsc -watch -p tsconfig.json",
-    "package": "npm run build && vsce package"
+    "package": "npm run build && node -e \"const{cpSync,mkdirSync}=require('fs');const d='node_modules/probejs-tsserver-plugin';mkdirSync(d,{recursive:true});cpSync('tss_plugin/out',d+'/out',{recursive:true});cpSync('tss_plugin/package.json',d+'/package.json')\" && vsce package --allow-missing-repository"
   },
-  "dependencies": {
-    "probejs-tsserver-plugin": "file:./tss_plugin"
-  },
+  "dependencies": {},
   "devDependencies": {
     "typescript": "^5.7.0",
     "@types/vscode": "^1.96.0",

@@ -5,10 +5,10 @@ tsconfig.json
 *.tsbuildinfo
 .claude
 .idea
+.github
 .gitignore
 AGENTS.md
 CLAUDE.md
-tss_plugin/src
-tss_plugin/node_modules
-tss_plugin/tsconfig.json
+tss_plugin
 node_modules
+!node_modules/probejs-tsserver-plugin/**
