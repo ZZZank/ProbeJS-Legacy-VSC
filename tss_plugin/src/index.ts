@@ -1,23 +1,9 @@
-import ts from "typescript";
+import ts, { CompletionInfoFlags } from "typescript";
 import { PluginConfig, DEFAULT } from "./config";
 
 // const { $LevelChunk } = require("java:net/minecraft/world/level/chunk")
 const MATCH_REQUIRE_IMPORT = /const\s+{\s*\$[^}]+\s*}\s*=\s*require\("[^"]+"\)/;
 
-/**
- * Derive full Java class from module specifier and variable name.
- *
- * "java:some/java/pkg" + "$XXX" → "some.java.pkg.XXX"
- */
-function javaClassName(moduleSpecifier: string, variableName: string): string {
-  const pkg = moduleSpecifier.startsWith("java:")
-    ? moduleSpecifier.slice(5).replace(/\//g, ".")
-    : moduleSpecifier;
-  const cls = variableName.startsWith("$")
-    ? variableName.slice(1)
-    : variableName;
-  return pkg + "." + cls;
-}
 
 function renderTemplate(template: string, className: string, packageName: string): string {
   return template
@@ -28,11 +14,11 @@ function renderTemplate(template: string, className: string, packageName: string
 const pluginModule: ts.server.PluginModuleFactory = (mod) => {
   const { typescript } = mod;
 
-  let config: PluginConfig = DEFAULT;
+  let config: PluginConfig = Object.assign({}, DEFAULT);
 
   return {
     create(createInfo: ts.server.PluginCreateInfo) {
-      config = { ...config, ...createInfo.config };
+      config = Object.assign(config, createInfo.config);
 
       const logger = createInfo.project.projectService.logger;
 
@@ -58,8 +44,9 @@ const pluginModule: ts.server.PluginModuleFactory = (mod) => {
             if (!source || !source.startsWith("java:")) {
               return true;
             }
-            // Only allow names starting with $ and not ending with _
-            return entry.name.startsWith("$") && !entry.name.endsWith("_");
+            // block subpackage export
+            // e.g. export * as apache from "java:org"
+            return entry.name.startsWith("$");
           });
         }
 
@@ -93,7 +80,7 @@ const pluginModule: ts.server.PluginModuleFactory = (mod) => {
 
         // Source may come directly or via CompletionEntryData
         const specifier = source || data?.moduleSpecifier;
-        if (!specifier?.startsWith("java:") || !entryName.startsWith("$")) {
+        if (!specifier?.startsWith("java:") || !details.name.startsWith("$")) {
           return details;
         }
 
@@ -119,7 +106,7 @@ const pluginModule: ts.server.PluginModuleFactory = (mod) => {
       return proxy;
     },
     onConfigurationChanged(newConfig: PluginConfig) {
-      config = { ...config, ...newConfig };
+      config = Object.assign(config, newConfig);
     },
   };
 };
