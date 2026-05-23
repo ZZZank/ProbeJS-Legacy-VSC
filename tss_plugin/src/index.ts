@@ -48,7 +48,7 @@ const pluginModule: ts.server.PluginModuleFactory = (mod) => {
           position,
           options,
         );
-        if (!completion) {
+        if (!completion || ((completion.flags ?? 0) & CompletionInfoFlags.MayIncludeAutoImports) == 0) {
           return completion;
         }
 
